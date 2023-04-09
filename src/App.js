@@ -1,25 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import {ref, child, get } from "firebase/database";
+import './firebase'
+import { database  } from './firebase';
+import { useEffect, useState } from 'react';
 
 function App() {
+  const [value, setValue] = useState();
+
+  useEffect(()=>{
+    const dbRef = ref(database);
+    get(child(dbRef, `ScoreBoard`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        setValue(snapshot.val())
+      } else {
+        console.log("No data available");
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  },[])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {!!value && console.log(value)}
+      <h2>Hello Wolrd !!</h2>
     </div>
-  );
+  )
 }
 
 export default App;
